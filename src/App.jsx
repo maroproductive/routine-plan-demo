@@ -21,13 +21,19 @@ const T = {
 };
 
 const PORTFOLIO_URL_FALLBACK = 'https://marwan-web-9n4yjkc1c-maroproductive1.vercel.app';
-const DEMO_MODE_ENABLED = import.meta.env.VITE_DEMO_MODE === 'true';
+const DEMO_MODE_ENABLED = (() => {
+  const rawValue = String(import.meta.env.VITE_DEMO_MODE ?? '').trim().toLowerCase();
+  return ['true', '1', 'yes', 'on'].includes(rawValue);
+})();
 
 function getPortfolioUrl() {
-  const configuredUrl = String(import.meta.env.NEXT_PUBLIC_PORTFOLIO_URL || '').trim();
+  const configuredUrl = String(import.meta.env.NEXT_PUBLIC_PORTFOLIO_URL ?? '').trim();
+  const candidateUrl = configuredUrl || PORTFOLIO_URL_FALLBACK;
+
   try {
-    const url = new URL(configuredUrl || PORTFOLIO_URL_FALLBACK);
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : PORTFOLIO_URL_FALLBACK;
+    const url = new URL(candidateUrl);
+    const isSafeProtocol = url.protocol === 'http:' || url.protocol === 'https:';
+    return isSafeProtocol ? url.href : PORTFOLIO_URL_FALLBACK;
   } catch {
     return PORTFOLIO_URL_FALLBACK;
   }
@@ -321,8 +327,10 @@ function DemoNotice() {
     <div style={{ background: T.surface, borderBottom: `1px solid ${T.line}` }} className="px-4 py-2 text-center">
       <a
         href={getPortfolioUrl()}
+        target="_self"
+        rel="noreferrer"
         style={{ color: T.signature }}
-        className="inline-flex min-h-11 items-center justify-center px-2 text-xs font-medium tracking-wide transition-opacity hover:opacity-80"
+        className="inline-flex min-h-10 items-center justify-center rounded-md border border-transparent px-2 text-[11px] font-medium tracking-wide text-left transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0A0C10] sm:text-xs"
       >
         ← Back to Marwan Web Dev
       </a>
