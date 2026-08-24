@@ -19,6 +19,19 @@ const T = {
   signatureDim: 'rgba(127,231,196,0.14)',
   danger: '#F87171',
 };
+
+const PORTFOLIO_URL_FALLBACK = 'https://marwan-web-9n4yjkc1c-maroproductive1.vercel.app';
+const DEMO_MODE_ENABLED = import.meta.env.VITE_DEMO_MODE === 'true';
+
+function getPortfolioUrl() {
+  const configuredUrl = String(import.meta.env.NEXT_PUBLIC_PORTFOLIO_URL || '').trim();
+  try {
+    const url = new URL(configuredUrl || PORTFOLIO_URL_FALLBACK);
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : PORTFOLIO_URL_FALLBACK;
+  } catch {
+    return PORTFOLIO_URL_FALLBACK;
+  }
+}
 const inkMuted = '#8A8F98';
 
 const ICONS = { BookOpen, Dumbbell, Utensils, Droplet, Moon, Brain, Briefcase, Coffee, Sun, Heart, Music, PenTool, Code2, Target };
@@ -246,6 +259,7 @@ export default function RoutineTracker() {
   return (
     <div style={{ background: T.void, color: T.ink, minHeight: '100vh', fontFamily: "'Inter', system-ui, sans-serif" }} className="w-full pb-24">
       <GlobalStyle />
+      {DEMO_MODE_ENABLED && <DemoNotice />}
       <BurstLayer bursts={bursts} />
 
       {view === 'today' && (
@@ -298,6 +312,20 @@ export default function RoutineTracker() {
           onSave={(note) => saveNote(noteEditorFor, todayStr(), note)}
         />
       )}
+    </div>
+  );
+}
+
+function DemoNotice() {
+  return (
+    <div style={{ background: T.surface, borderBottom: `1px solid ${T.line}` }} className="px-4 py-2 text-center">
+      <a
+        href={getPortfolioUrl()}
+        style={{ color: T.signature }}
+        className="inline-flex min-h-11 items-center justify-center px-2 text-xs font-medium tracking-wide transition-opacity hover:opacity-80"
+      >
+        ← Back to Marwan Web Dev
+      </a>
     </div>
   );
 }
