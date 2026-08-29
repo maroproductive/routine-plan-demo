@@ -27,11 +27,15 @@ const DEMO_MODE_ENABLED = (() => {
 })();
 
 function getPortfolioUrl() {
-  const configuredUrl = String(import.meta.env.NEXT_PUBLIC_PORTFOLIO_URL ?? '').trim();
-  const candidateUrl = configuredUrl || PORTFOLIO_URL_FALLBACK;
+  const configuredUrl = [
+    import.meta.env.VITE_PORTFOLIO_URL,
+    import.meta.env.NEXT_PUBLIC_PORTFOLIO_URL,
+  ]
+    .map((value) => String(value ?? '').trim())
+    .find(Boolean) || PORTFOLIO_URL_FALLBACK;
 
   try {
-    const url = new URL(candidateUrl);
+    const url = new URL(configuredUrl);
     const isSafeProtocol = url.protocol === 'http:' || url.protocol === 'https:';
     return isSafeProtocol ? url.href : PORTFOLIO_URL_FALLBACK;
   } catch {
