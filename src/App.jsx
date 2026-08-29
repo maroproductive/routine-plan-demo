@@ -20,7 +20,7 @@ const T = {
   danger: '#F87171',
 };
 
-const PORTFOLIO_URL_FALLBACK = 'https://marwan-web-9n4yjkc1c-maroproductive1.vercel.app';
+const PORTFOLIO_URL_FALLBACK = 'https://marwan-web-dev.vercel.app';
 const DEMO_MODE_ENABLED = (() => {
   const rawValue = String(import.meta.env.VITE_DEMO_MODE ?? '').trim().toLowerCase();
   return ['true', '1', 'yes', 'on'].includes(rawValue);
